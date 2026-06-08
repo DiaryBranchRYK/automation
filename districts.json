@@ -1,0 +1,12 @@
+[
+  {
+    "district_id": "1",
+    "district_name": "Attock",
+    "base_url": "https://dsj.punjab.gov.pk"
+  },
+  {
+    "district_id": "2",
+    "district_name": "Lahore",
+    "base_url": "https://dsjlahore.punjab.gov.pk"
+  }
+]
