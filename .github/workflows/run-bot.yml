@@ -1,0 +1,44 @@
+name: Run Court Bot
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Pakistan time: 5:00 PM to 11:30 PM
+    - cron: "0,30 17-23 * * *"
+      timezone: "Asia/Karachi"
+
+    # Pakistan time: 12:00 AM to 7:30 AM
+    # 7:30 par workflow trigger ho sakta hai, lekin master_bot.py blocked-time guard se immediately stop ho jayega.
+    - cron: "0,30 0-7 * * *"
+      timezone: "Asia/Karachi"
+
+concurrency:
+  group: court-bot
+  cancel-in-progress: false
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run master bot
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          MAX_RUNTIME_MINUTES: 25
+        run: |
+          python master_bot.py
